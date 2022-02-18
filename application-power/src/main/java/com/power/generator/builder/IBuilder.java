@@ -18,4 +18,6 @@ public interface IBuilder {
      */
     String generateTemplate(TableInfo tableInfo);
 
+	//String generateTemplate(TableInfo tableInfo);
+
 }
