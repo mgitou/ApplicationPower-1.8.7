@@ -91,42 +91,7 @@ public class CodeWriter extends AbstractCodeWriter {
                 template = BeetlTemplateUtil.getByName(key);
                 template.binding(GeneratorConstant.COMMON_VARIABLE);
 
-                //spring mybatis config
-                template.binding("mappingDir", basePackage.replaceAll("[.]", "/"));
-                template.binding("jdbcDriver", "${jdbc.driver}");
-                template.binding("jdbcUrl", "${jdbc.url}");
-                template.binding("jdbcUserName", "${jdbc.username}");
-                template.binding("jdbcPassword", "${jdbc.password}");
-                Set<String> dataSourceSet = GeneratorProperties.getMultipleDataSource();
-                Map<String, String> dataSourceMap = new HashMap<>();
-                int i = 0;
-                for (String str : dataSourceSet) {
-                    dataSourceMap.put(StringUtil.firstToUpperCase(str), str);
-                    if (i == 0) {
-                        template.binding("defaultDs", StringUtil.firstToUpperCase(str));
-                    }
-                    i++;
-                }
-                template.binding("dataSourceMap", dataSourceMap);
-                //pom
-                template.binding("useAssembly", GeneratorProperties.getAssembly());
-                template.binding("useJTA", GeneratorProperties.isJTA());
-                template.binding("isMultipleDataSource", GeneratorProperties.isMultipleDataSource());
-                template.binding("isUseDocker", GeneratorProperties.useDocker());
-                template.binding(GeneratorConstant.LOMBOK, GeneratorProperties.useLombok());
-                //log4j2
-                template.binding("LOG_PATH", "${sys:logging.path}");
-                //mybatis config
-                template.binding("cacheEnabled", GeneratorProperties.enableCache());
-
-                //SpringBoot yml
-                template.binding("dbUrl", dbProp.getProperty("jdbc.url"));
-                template.binding("dbUserName", YmlUtil.addDoubleQuote(dbProp.getProperty("jdbc.username")));
-                template.binding("dbPassword", YmlUtil.addDoubleQuote(dbProp.getProperty("jdbc.password")));
-                template.binding("dbDriver", dbProp.getProperty("jdbc.driver"));
-                template.binding("list", GeneratorProperties.getMultipleDataSource());
-                template.binding("isJTA", GeneratorProperties.isJTA());
-                template.binding("mybatis",GeneratorProperties.getDbTemplatePath());
+                firstRefactoring(basePackage, dbProp, template);
 
                 FileUtil.writeFileNotAppend(template.render(), entry.getValue());
             }
@@ -134,6 +99,45 @@ public class CodeWriter extends AbstractCodeWriter {
         template = BeetlTemplateUtil.getByName(ConstVal.TPL_GITIGNORE);
         FileUtil.writeFileNotAppend(template.render(), config.getProjectPath().getBasePath() + "/.gitignore");
     }
+
+	private void firstRefactoring(String basePackage, PropertiesUtils dbProp, Template template) {
+		//spring mybatis config
+		template.binding("mappingDir", basePackage.replaceAll("[.]", "/"));
+		template.binding("jdbcDriver", "${jdbc.driver}");
+		template.binding("jdbcUrl", "${jdbc.url}");
+		template.binding("jdbcUserName", "${jdbc.username}");
+		template.binding("jdbcPassword", "${jdbc.password}");
+		Set<String> dataSourceSet = GeneratorProperties.getMultipleDataSource();
+		Map<String, String> dataSourceMap = new HashMap<>();
+		int i = 0;
+		for (String str : dataSourceSet) {
+		    dataSourceMap.put(StringUtil.firstToUpperCase(str), str);
+		    if (i == 0) {
+		        template.binding("defaultDs", StringUtil.firstToUpperCase(str));
+		    }
+		    i++;
+		}
+		template.binding("dataSourceMap", dataSourceMap);
+		//pom
+		template.binding("useAssembly", GeneratorProperties.getAssembly());
+		template.binding("useJTA", GeneratorProperties.isJTA());
+		template.binding("isMultipleDataSource", GeneratorProperties.isMultipleDataSource());
+		template.binding("isUseDocker", GeneratorProperties.useDocker());
+		template.binding(GeneratorConstant.LOMBOK, GeneratorProperties.useLombok());
+		//log4j2
+		template.binding("LOG_PATH", "${sys:logging.path}");
+		//mybatis config
+		template.binding("cacheEnabled", GeneratorProperties.enableCache());
+
+		//SpringBoot yml
+		template.binding("dbUrl", dbProp.getProperty("jdbc.url"));
+		template.binding("dbUserName", YmlUtil.addDoubleQuote(dbProp.getProperty("jdbc.username")));
+		template.binding("dbPassword", YmlUtil.addDoubleQuote(dbProp.getProperty("jdbc.password")));
+		template.binding("dbDriver", dbProp.getProperty("jdbc.driver"));
+		template.binding("list", GeneratorProperties.getMultipleDataSource());
+		template.binding("isJTA", GeneratorProperties.isJTA());
+		template.binding("mybatis",GeneratorProperties.getDbTemplatePath());
+	}
 
     /**
      * base code是项目的一些基本类，包括单元测基类
