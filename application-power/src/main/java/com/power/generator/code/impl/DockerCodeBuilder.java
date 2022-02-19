@@ -1,10 +1,10 @@
 package com.power.generator.code.impl;
 
+import com.power.generator.builder.CodeWriteUtil;
 import com.power.generator.code.ICodeBuilder;
 import com.power.generator.constant.ConstVal;
 import com.power.generator.constant.GeneratorConstant;
 import com.power.generator.utils.BeetlTemplateUtil;
-import com.power.generator.utils.CodeWriteUtil;
 import com.power.generator.utils.GeneratorProperties;
 import com.power.generator.utils.PathUtil;
 import org.beetl.core.Template;

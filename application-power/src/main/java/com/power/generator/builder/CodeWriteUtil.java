@@ -1,4 +1,4 @@
-package com.power.generator.utils;
+package com.power.generator.builder;
 
 import com.power.common.util.FileUtil;
 
