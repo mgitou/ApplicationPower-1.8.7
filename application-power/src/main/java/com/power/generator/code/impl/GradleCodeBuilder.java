@@ -26,12 +26,9 @@ public class GradleCodeBuilder implements ICodeBuilder {
     private static final String SETTINGS_TPL = "gradle/settings.btl";
 
     private static final String BUILD_TPL = "gradle/build.btl";
-    /**
-     * store paths for gradle project config
-     */
-    private Map<String, String> paths;
+    private GradleCodeBuilderData data = new GradleCodeBuilderData();
 
-    public GradleCodeBuilder() {
+	public GradleCodeBuilder() {
         if (GeneratorProperties.useGradle()) {
             buildPath();
             buildCode();
@@ -41,19 +38,19 @@ public class GradleCodeBuilder implements ICodeBuilder {
     @Override
     public void buildPath() {
         // init path
-        paths = new HashMap<>();
+        data.paths = new HashMap<>();
         String basePath = getBasePath();
         String wrapperPath = getBasePath() + ConstVal.FILE_SEPARATOR + ConstVal.GRADLE_WRAPPER;
-        paths.put(WRAPPER_PATH, wrapperPath);
-        paths.put("basePath", basePath);
-        paths.put(ConstVal.GRADLE_BIN, PathUtil.connectPath(basePath, ConstVal.GRADLE_BIN));
-        PathUtil.mkdirs(paths);
+        data.paths.put(WRAPPER_PATH, wrapperPath);
+        data.paths.put("basePath", basePath);
+        data.paths.put(ConstVal.GRADLE_BIN, PathUtil.connectPath(basePath, ConstVal.GRADLE_BIN));
+        PathUtil.mkdirs(data.paths);
 
     }
 
     @Override
     public void buildCode() {
-        String binPath = paths.get(ConstVal.GRADLE_BIN);
+        String binPath = data.paths.get(ConstVal.GRADLE_BIN);
         Map<String, String> scripts = new ScriptBuilder().generateScripts();
         for (Map.Entry<String, String> entry : scripts.entrySet()) {
             FileUtil.writeFileNotAppend(entry.getValue(), binPath + ConstVal.FILE_SEPARATOR + entry.getKey());
@@ -65,7 +62,7 @@ public class GradleCodeBuilder implements ICodeBuilder {
         //copy gradlew.bat
         CodeWriteUtil.nioCopy("template/gradle/gradlew.bat", PathUtil.connectPath(basePath, "gradlew.bat"));
         //copy wrapper
-        CodeWriteUtil.nioCopyDir("template/gradle/wrapper/", paths.get(WRAPPER_PATH));
+        CodeWriteUtil.nioCopyDir("template/gradle/wrapper/", data.paths.get(WRAPPER_PATH));
 
     }
 
