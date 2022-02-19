@@ -37,7 +37,22 @@ public class SpringBootMybatisCfgBuilder {
 
         StringBuilder sqlSessionFactoryMap = new StringBuilder();
         int i = 0;
-        for (String str : ds) {
+        fourthRefactoring(ds, codes, sourceBuilder, sessionBuilder, dynamicDataSource, targetDataSources,
+				sqlSessionTemplate, sqlSessionFactoryMap, i);
+        codes.put("dataSource", sourceBuilder.toString());
+        codes.put("sqlSessionFactory", sessionBuilder.toString());
+        codes.put("dynamicDataSource", dynamicDataSource.toString());
+        codes.put("sqlSessionTemplate", sqlSessionTemplate.toString());
+        codes.put("targetDataSources", targetDataSources.toString());
+        codes.put("sqlSessionFactoryMap", sqlSessionFactoryMap.toString());
+        return codes;
+    }
+
+
+	private void fourthRefactoring(Set<String> ds, Map<String, String> codes, StringBuilder sourceBuilder,
+			StringBuilder sessionBuilder, StringBuilder dynamicDataSource, StringBuilder targetDataSources,
+			StringBuilder sqlSessionTemplate, StringBuilder sqlSessionFactoryMap, int i) {
+		for (String str : ds) {
             String dataSourceName = "dataSource" + StringUtil.firstToUpperCase(str);
             String sessionName = "sqlSessionFactory" + StringUtil.firstToUpperCase(str);
             String factoryName = "factory" + StringUtil.firstToUpperCase(str);
@@ -87,14 +102,7 @@ public class SpringBootMybatisCfgBuilder {
 
             i++;
         }
-        codes.put("dataSource", sourceBuilder.toString());
-        codes.put("sqlSessionFactory", sessionBuilder.toString());
-        codes.put("dynamicDataSource", dynamicDataSource.toString());
-        codes.put("sqlSessionTemplate", sqlSessionTemplate.toString());
-        codes.put("targetDataSources", targetDataSources.toString());
-        codes.put("sqlSessionFactoryMap", sqlSessionFactoryMap.toString());
-        return codes;
-    }
+	}
 
 
 }
